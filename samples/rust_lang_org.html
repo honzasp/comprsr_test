@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset='utf-8'>
+
+  <title>The Rust Programming Language</title>
+
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="codemirror.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="favicon.ico" />
+</head>
+
+
+<body>
+
+  <!-- GitHub banner -->
+  <!--<a href="https://github.com/mozilla/rust"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>-->
+
+  <div class="container">
+    <div class="row">
+
+      <!-- Sidebar -->
+      <div id="nav" class="span3">
+	<img id="logo" src="logos/rust-logo-128x128-blk.png" alt="rust logo"/>
+	<ul class="unstyled menu">
+          <li class="menu-header">Documentation
+            <ul>
+              <li><div class="doc-rev">Trunk</div>
+                <ul class="docs">
+                  <li><a href="http://doc.rust-lang.org/doc/tutorial.html">Tutorial</a></li>
+                  <li><a href="http://doc.rust-lang.org/doc/rust.html">Manual</a></li>
+                  <li><a href="http://doc.rust-lang.org/doc/std/index.html">Standard</a> |
+                      <a href="http://doc.rust-lang.org/doc/extra/index.html">Extra</a></li>
+                </ul>
+              </li>
+              <li><div class="doc-rev">0.6</div>
+                <ul class="docs">
+                  <li><a href="http://doc.rust-lang.org/doc/0.6/tutorial.html">Tutorial</a></li>
+                  <li><a href="http://doc.rust-lang.org/doc/0.6/rust.html">Manual</a></li>
+                  <li><a href="http://doc.rust-lang.org/doc/0.6/core/index.html">Core</a> |
+                      <a href="http://doc.rust-lang.org/doc/0.6/std/index.html">Standard</a></li>
+                </ul>
+              </li>
+              <li><a href="http://github.com/mozilla/rust/wiki/Docs">Other docs</a></li>
+            </ul>
+          </li>
+	  <li class="menu-header">Releases
+        <ul>
+          <li class="release"><a href="https://github.com/mozilla/rust/blob/release-0.6/RELEASES.txt">0.6, April 3 2013</a>
+			<ul>
+			  <li>[<a href="http://static.rust-lang.org/dist/rust-0.6.tar.gz">.tar.gz</a>]
+			  <li>[<a href="http://static.rust-lang.org/dist/rust-0.6-install.exe">.exe</a>]
+			  </li>
+			</ul>
+	      </li>
+	      <li><a href="https://github.com/mozilla/rust/wiki/Doc-releases">Previous releases</a></li>
+        </ul>
+	  </li>
+          <li class="menu-header">Mailing lists
+            <ul>
+              <li><a href="https://mail.mozilla.org/listinfo/rust-dev">rust-dev</a></li>
+              <li><a href="https://mail.mozilla.org/listinfo/rust-commits">rust-commits</a></li>
+            </ul>
+          </li>
+	  <li class="menu-header">Other resources
+	    <ul>
+              <li><a href="http://github.com/mozilla/rust">GitHub</a></li>
+              <li>
+		<a href="http://chat.mibbit.com/?server=irc.mozilla.org&channel=%23rust">IRC</a>
+		(<a href="http://irclog.gr/#browse/irc.mozilla.org/rust">logs</a>)
+	      </li>
+              <li><a href="http://twitter.com/rustlang">Twitter</a></li>
+	    </ul>
+	  </li>
+	</ul>
+      </div> <!-- #nav -->
+
+      <!-- Main content -->
+      <div id="main" class="span13">
+
+	<h1>Rust <small>a safe, concurrent, practical language</small></h1>
+
+	<p>
+	  Rust is a curly-brace, block-structured expression
+	  language. It visually resembles the C language family, but
+	  differs significantly in syntactic and semantic details. Its
+	  design is oriented toward concerns of “programming in the
+	  large”, that is, of creating and
+	  maintaining <em>boundaries</em> – both abstract and
+	  operational – that preserve large-system
+	  <em>integrity</em>, <em>availability</em>
+	  and <em>concurrency</em>.
+	</p>
+
+	<p>
+	  It supports a mixture of imperative procedural, concurrent
+	  actor, object-oriented and pure functional styles. Rust also
+	  supports generic programming and metaprogramming, in both
+	  static and dynamic styles.
+	</p>
+
+
+	<div class="row">
+	  <div class="span3"><h2>A short summary of features</h2></div>
+
+	  <div class="span10">
+	    <table id="features">
+	      <tr><td>Type system</td><td>static, nominal, linear, algebraic, locally inferred</td></tr>
+	      <tr><td>Memory safety</td><td>no null or dangling pointers, no buffer overflows</td></tr>
+	      <tr><td>Concurrency</td><td>lightweight tasks with message passing, no shared memory</td></tr>
+	      <tr><td>Generics</td><td>type parameterization with type classes</td></tr>
+	      <tr><td>Exception handling</td><td>unrecoverable unwinding with task isolation</td></tr>
+	      <tr><td>Memory model</td><td>optional task-local GC, safe pointer types with region analysis</td></tr>
+	      <tr><td>Compilation model</td><td>ahead-of-time, C/C++ compatible</td></tr>
+	      <tr><td>License</td><td>dual MIT / Apache 2</td></tr>
+	    </table>
+	  </div> <!-- .span10 -->
+	</div> <!-- .row -->
+
+
+	<div class="row">
+	  <div class="span3"><h2>A very small taste of what it looks like</h2></div>
+
+	  <div class="span10">
+
+<pre class="cm-s-default">
+<span class="cm-keyword">use</span> <span class="cm-variable-2">core</span>::<span class="cm-variable-2">rand</span>::<span class="cm-variable-3">RngUtil</span>;
+
+<span class="cm-keyword">fn</span> <span class="cm-def">main</span>() {
+    <span class="cm-keyword">for</span> [<span class="cm-string">"Alice"</span>, <span class="cm-string">"Bob"</span>, <span class="cm-string">"Carol"</span>].<span class="cm-variable">each</span> |&amp;<span class="cm-variable">name</span>| {
+        <span class="cm-keyword">do</span> <span class="cm-variable">spawn</span> {
+            <span class="cm-keyword">let</span> <span class="cm-def">v</span> = <span class="cm-variable-2">rand::</span><span class="cm-variable">Rng</span>().<span class="cm-variable">shuffle</span>([<span class="cm-number">1</span>, <span class="cm-number">2</span>, <span class="cm-number">3</span>]);
+            <span class="cm-keyword">for</span> <span class="cm-variable">v</span>.<span class="cm-variable">each</span> |&amp;<span class="cm-variable">num</span>| {
+                <span class="cm-variable">print</span>(<span class="cm-variable-3">fmt!</span>(<span class="cm-string">"%s says: '%d'\n"</span>, <span class="cm-variable">name</span>, <span class="cm-variable">num</span>))
+            }
+        }
+    }
+}
+</pre>
+
+          </div> <!-- .span10 -->
+
+	</div> <!-- .row -->
+      </div> <!-- #main -->
+
+    </div> <!-- .row -->
+  </div> <!-- #container -->
+
+</body>
+
+</html>
