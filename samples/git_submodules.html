@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>Git - Submodules</title>
+<meta charset='utf-8'>
+<meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+<link href='/favicon.png' rel='shortcut icon' type='image/png'>
+<link href="/assets/git-scm-27df88bed03752bf961b2b4d7d896f10.css" media="screen" rel="stylesheet" type="text/css" />
+<script src="/assets/modernizr-ed33bf57b65db2b87b251f7e92eb22bf.js" type="text/javascript"></script>
+<script src="/assets/modernizr-tests-7d276fc9b3f84590beb0bba47cdd823a.js" type="text/javascript"></script>
+<!--[if (gte IE 6)&(lte IE 8)]>
+<script src='/javascripts/selectivizr-min.js' type='text/javascript'></script>
+<![endif]-->
+<script src="http://use.typekit.com/jsq2fql.js" type="text/javascript"></script>
+<script>
+  //<![CDATA[
+    try{Typekit.load();}catch(e){}
+  //]]>
+</script>
+<script type="text/javascript">var NREUMQ=NREUMQ||[];NREUMQ.push(["mark","firstbyte",new Date().getTime()]);</script></head>
+<body id='documentation'>
+<div class='inner'>
+<header>
+<a href="/"><img src="/images/logo@2x.png" width="110" height="46" alt="Git" /></a>
+<span id='tagline'>
+<em>--</em>local-branching-on-the-cheap
+</span>
+<form action='/search/results' id='search'>
+<input id="search-text" name="search" placeholder="Search entire site..." autocomplete="off" type="text" />
+</form>
+<div id='search-results'></div>
+</header>
+
+</div>
+<div class='inner'>
+<div id='content-wrapper'>
+<aside class='sidebar'>
+<nav>
+<ul>
+<li><a href="/about" class="">About</a></li>
+<li>
+<a href="/doc" class="active">Documentation</a>
+<ul class='expanded'>
+<li><a href="/docs" class="">Reference</a></li>
+<li><a href="/book" class="active">Book</a></li>
+<li><a href="/blog" class="">Blog</a></li>
+<li><a href="/videos" class="">Videos</a></li>
+<li><a href="/doc/ext" class="">External Links</a></li>
+</ul>
+</li>
+<li><a href="/blog" class="">Blog</a></li>
+<li>
+<a href="/downloads" class="">Downloads</a>
+<ul class=''>
+<li><a href="/downloads/guis" class="">GUI Clients</a></li>
+<li><a href="/downloads/logos" class="">Logos</a></li>
+</ul>
+</li>
+<li><a href="/community" class="">Community</a></li>
+</ul>
+</nav>
+<hr class='sidebar'>
+  <p>Download this book in <a href="https://github.s3.amazonaws.com/media/progit.en.pdf">PDF</a>, <a href="https://github.s3.amazonaws.com/media/pro-git.en.mobi">mobi</a>, or <a href="https://github.s3.amazonaws.com/media/progit.epub">ePub</a> form for free.</p>
+
+  <p>
+This book is translated into 
+  <a href="/book/de">German</a>,
+  <a href="/book/zh">Chinese</a>,
+  <a href="/book/fr">French</a>,
+  <a href="/book/ja">Japanese</a>,
+  <a href="/book/nl">Dutch</a>,
+  <a href="/book/ru">Russian</a>,
+  <a href="/book/ko">Korean</a>,
+  <a href="/book/pt-br">Brazilian Portugese</a> and
+  <a href="/book/cs">Czech</a>.
+</p>
+<p>
+Partial translations available in
+  <a href="/book/ar">Arabic</a>,
+  <a href="/book/es">Spanish</a>,
+  <a href="/book/id">Indonesian</a>,
+  <a href="/book/it">Italian</a>,
+  <a href="/book/mk">Macedonian</a>,
+  <a href="/book/pl">Polish</a>,
+  <a href="/book/tr">Turkish</a>,
+  <a href="/book/zh-tw">Taiwanese Mandarin</a>,
+  <a href="/book/es-ni">Spanish (Nicaragua)</a>,
+  <a href="/book/ca">Catalan</a>,
+  <a href="/book/th">Thai</a> and
+  <a href="/book/fi">Finnish</a>.
+</p>
+
+<hr class="sidebar"/>
+
+    <h4>Related Material</h4>
+  <ul class="related-material">
+      <li class="reference">
+      <strong><a href="/ref/git-submodule">git-submodule</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-checkout">git-checkout</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-status">git-status</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-diff">git-diff</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-log">git-log</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-add">git-add</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-commit">git-commit</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+      <li class="reference">
+      <strong><a href="/ref/git-merge">git-merge</a></strong>
+        in <a href="/docs">Reference</a>
+      </li>
+  </ul>
+
+
+</aside>
+<div id='content'>
+
+
+<div id='book-chapters'>
+  <a class="dropdown-trigger" id="book-chapters-trigger" data-panel-id="chapters-dropdown" href="#">Chapters ▾</a>
+<div class='dropdown-panel' id='chapters-dropdown'>
+  <div class="three-column">
+    <div class='column-left'>
+      <ol class='book-toc'>
+  <li class='chapter'>
+  <h2>1. <a href="/book/en/Getting-Started">Getting Started</a></h2>
+    <ol>
+          <li>
+            1.1
+            <a href="/book/en/Getting-Started-About-Version-Control">About Version Control</a>
+          </li>
+          <li>
+            1.2
+            <a href="/book/en/Getting-Started-A-Short-History-of-Git">A Short History of Git</a>
+          </li>
+          <li>
+            1.3
+            <a href="/book/en/Getting-Started-Git-Basics">Git Basics</a>
+          </li>
+          <li>
+            1.4
+            <a href="/book/en/Getting-Started-Installing-Git">Installing Git</a>
+          </li>
+          <li>
+            1.5
+            <a href="/book/en/Getting-Started-First-Time-Git-Setup">First-Time Git Setup</a>
+          </li>
+          <li>
+            1.6
+            <a href="/book/en/Getting-Started-Getting-Help">Getting Help</a>
+          </li>
+          <li>
+            1.7
+            <a href="/book/en/Getting-Started-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>2. <a href="/book/en/Git-Basics">Git Basics</a></h2>
+    <ol>
+          <li>
+            2.1
+            <a href="/book/en/Git-Basics-Getting-a-Git-Repository">Getting a Git Repository</a>
+          </li>
+          <li>
+            2.2
+            <a href="/book/en/Git-Basics-Recording-Changes-to-the-Repository">Recording Changes to the Repository</a>
+          </li>
+          <li>
+            2.3
+            <a href="/book/en/Git-Basics-Viewing-the-Commit-History">Viewing the Commit History</a>
+          </li>
+          <li>
+            2.4
+            <a href="/book/en/Git-Basics-Undoing-Things">Undoing Things</a>
+          </li>
+          <li>
+            2.5
+            <a href="/book/en/Git-Basics-Working-with-Remotes">Working with Remotes</a>
+          </li>
+          <li>
+            2.6
+            <a href="/book/en/Git-Basics-Tagging">Tagging</a>
+          </li>
+          <li>
+            2.7
+            <a href="/book/en/Git-Basics-Tips-and-Tricks">Tips and Tricks</a>
+          </li>
+          <li>
+            2.8
+            <a href="/book/en/Git-Basics-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>3. <a href="/book/en/Git-Branching">Git Branching</a></h2>
+    <ol>
+          <li>
+            3.1
+            <a href="/book/en/Git-Branching-What-a-Branch-Is">What a Branch Is</a>
+          </li>
+          <li>
+            3.2
+            <a href="/book/en/Git-Branching-Basic-Branching-and-Merging">Basic Branching and Merging</a>
+          </li>
+          <li>
+            3.3
+            <a href="/book/en/Git-Branching-Branch-Management">Branch Management</a>
+          </li>
+          <li>
+            3.4
+            <a href="/book/en/Git-Branching-Branching-Workflows">Branching Workflows</a>
+          </li>
+          <li>
+            3.5
+            <a href="/book/en/Git-Branching-Remote-Branches">Remote Branches</a>
+          </li>
+          <li>
+            3.6
+            <a href="/book/en/Git-Branching-Rebasing">Rebasing</a>
+          </li>
+          <li>
+            3.7
+            <a href="/book/en/Git-Branching-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+    </div>
+    <div class='column-middle'>
+      <ol class='book-toc'>
+  <li class='chapter'>
+  <h2>4. <a href="/book/en/Git-on-the-Server">Git on the Server</a></h2>
+    <ol>
+          <li>
+            4.1
+            <a href="/book/en/Git-on-the-Server-The-Protocols">The Protocols</a>
+          </li>
+          <li>
+            4.2
+            <a href="/book/en/Git-on-the-Server-Getting-Git-on-a-Server">Getting Git on a Server</a>
+          </li>
+          <li>
+            4.3
+            <a href="/book/en/Git-on-the-Server-Generating-Your-SSH-Public-Key">Generating Your SSH Public Key</a>
+          </li>
+          <li>
+            4.4
+            <a href="/book/en/Git-on-the-Server-Setting-Up-the-Server">Setting Up the Server</a>
+          </li>
+          <li>
+            4.5
+            <a href="/book/en/Git-on-the-Server-Public-Access">Public Access</a>
+          </li>
+          <li>
+            4.6
+            <a href="/book/en/Git-on-the-Server-GitWeb">GitWeb</a>
+          </li>
+          <li>
+            4.7
+            <a href="/book/en/Git-on-the-Server-Gitosis">Gitosis</a>
+          </li>
+          <li>
+            4.8
+            <a href="/book/en/Git-on-the-Server-Gitolite">Gitolite</a>
+          </li>
+          <li>
+            4.9
+            <a href="/book/en/Git-on-the-Server-Git-Daemon">Git Daemon</a>
+          </li>
+          <li>
+            4.10
+            <a href="/book/en/Git-on-the-Server-Hosted-Git">Hosted Git</a>
+          </li>
+          <li>
+            4.11
+            <a href="/book/en/Git-on-the-Server-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>5. <a href="/book/en/Distributed-Git">Distributed Git</a></h2>
+    <ol>
+          <li>
+            5.1
+            <a href="/book/en/Distributed-Git-Distributed-Workflows">Distributed Workflows</a>
+          </li>
+          <li>
+            5.2
+            <a href="/book/en/Distributed-Git-Contributing-to-a-Project">Contributing to a Project</a>
+          </li>
+          <li>
+            5.3
+            <a href="/book/en/Distributed-Git-Maintaining-a-Project">Maintaining a Project</a>
+          </li>
+          <li>
+            5.4
+            <a href="/book/en/Distributed-Git-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>6. <a href="/book/en/Git-Tools">Git Tools</a></h2>
+    <ol>
+          <li>
+            6.1
+            <a href="/book/en/Git-Tools-Revision-Selection">Revision Selection</a>
+          </li>
+          <li>
+            6.2
+            <a href="/book/en/Git-Tools-Interactive-Staging">Interactive Staging</a>
+          </li>
+          <li>
+            6.3
+            <a href="/book/en/Git-Tools-Stashing">Stashing</a>
+          </li>
+          <li>
+            6.4
+            <a href="/book/en/Git-Tools-Rewriting-History">Rewriting History</a>
+          </li>
+          <li>
+            6.5
+            <a href="/book/en/Git-Tools-Debugging-with-Git">Debugging with Git</a>
+          </li>
+          <li>
+            6.6
+            <a href="/book/en/Git-Tools-Submodules">Submodules</a>
+          </li>
+          <li>
+            6.7
+            <a href="/book/en/Git-Tools-Subtree-Merging">Subtree Merging</a>
+          </li>
+          <li>
+            6.8
+            <a href="/book/en/Git-Tools-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+    </div>
+    <div class='column-right'>
+      <ol class='book-toc'>
+  <li class='chapter'>
+  <h2>7. <a href="/book/en/Customizing-Git">Customizing Git</a></h2>
+    <ol>
+          <li>
+            7.1
+            <a href="/book/en/Customizing-Git-Git-Configuration">Git Configuration</a>
+          </li>
+          <li>
+            7.2
+            <a href="/book/en/Customizing-Git-Git-Attributes">Git Attributes</a>
+          </li>
+          <li>
+            7.3
+            <a href="/book/en/Customizing-Git-Git-Hooks">Git Hooks</a>
+          </li>
+          <li>
+            7.4
+            <a href="/book/en/Customizing-Git-An-Example-Git-Enforced-Policy">An Example Git-Enforced Policy</a>
+          </li>
+          <li>
+            7.5
+            <a href="/book/en/Customizing-Git-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>8. <a href="/book/en/Git-and-Other-Systems">Git and Other Systems</a></h2>
+    <ol>
+          <li>
+            8.1
+            <a href="/book/en/Git-and-Other-Systems-Git-and-Subversion">Git and Subversion</a>
+          </li>
+          <li>
+            8.2
+            <a href="/book/en/Git-and-Other-Systems-Migrating-to-Git">Migrating to Git</a>
+          </li>
+          <li>
+            8.3
+            <a href="/book/en/Git-and-Other-Systems-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+  <li class='chapter'>
+  <h2>9. <a href="/book/en/Git-Internals">Git Internals</a></h2>
+    <ol>
+          <li>
+            9.1
+            <a href="/book/en/Git-Internals-Plumbing-and-Porcelain">Plumbing and Porcelain</a>
+          </li>
+          <li>
+            9.2
+            <a href="/book/en/Git-Internals-Git-Objects">Git Objects</a>
+          </li>
+          <li>
+            9.3
+            <a href="/book/en/Git-Internals-Git-References">Git References</a>
+          </li>
+          <li>
+            9.4
+            <a href="/book/en/Git-Internals-Packfiles">Packfiles</a>
+          </li>
+          <li>
+            9.5
+            <a href="/book/en/Git-Internals-The-Refspec">The Refspec</a>
+          </li>
+          <li>
+            9.6
+            <a href="/book/en/Git-Internals-Transfer-Protocols">Transfer Protocols</a>
+          </li>
+          <li>
+            9.7
+            <a href="/book/en/Git-Internals-Maintenance-and-Data-Recovery">Maintenance and Data Recovery</a>
+          </li>
+          <li>
+            9.8
+            <a href="/book/en/Git-Internals-Summary">Summary</a>
+          </li>
+    </ol>
+  </li>
+</ol>
+
+      <ol class="book-toc">
+        <li class='chapter'>
+          <h2><a href="/book/commands">Index of Commands</a></h2>
+        </li>
+      </ol>
+    </div>
+  </div>
+ </div>
+
+</div>
+
+<div id='main' class="book">
+    <h1>6.6 Git Tools - Submodules</h1>
+  <div><h2>Submodules</h2>
+
+<p>It often happens that while working on one project, you need to use another project from within it. Perhaps it’s a library that a third party developed or that you’re developing separately and using in multiple parent projects. A common issue arises in these scenarios: you want to be able to treat the two projects as separate yet still be able to use one from within the other.</p>
+
+<p>Here’s an example. Suppose you’re developing a web site and creating Atom feeds. Instead of writing your own Atom-generating code, you decide to use a library. You’re likely to have to either include this code from a shared library like a CPAN install or Ruby gem, or copy the source code into your own project tree. The issue with including the library is that it’s difficult to customize the library in any way and often more difficult to deploy it, because you need to make sure every client has that library available. The issue with vendoring the code into your own project is that any custom changes you make are difficult to merge when upstream changes become available.</p>
+
+<p>Git addresses this issue using submodules. Submodules allow you to keep a Git repository as a subdirectory of another Git repository. This lets you clone another repository into your project and keep your commits separate.</p>
+
+<h3 id="Starting-with-Submodules"><a href="#Starting-with-Submodules">Starting with Submodules</a></h3>
+
+<p>Suppose you want to add the Rack library (a Ruby web server gateway interface) to your project, possibly maintain your own changes to it, but continue to merge in upstream changes. The first thing you should do is clone the external repository into your subdirectory. You add external projects as submodules with the <code>git submodule add</code> command:</p>
+
+<pre><code>$ git submodule add git://github.com/chneukirchen/rack.git rack&#x000A;Initialized empty Git repository in /opt/subtest/rack/.git/&#x000A;remote: Counting objects: 3181, done.&#x000A;remote: Compressing objects: 100% (1534/1534), done.&#x000A;remote: Total 3181 (delta 1951), reused 2623 (delta 1603)&#x000A;Receiving objects: 100% (3181/3181), 675.42 KiB | 422 KiB/s, done.&#x000A;Resolving deltas: 100% (1951/1951), done.&#x000A;</code></pre>
+
+<p>Now you have the Rack project under a subdirectory named <code>rack</code> within your project. You can go into that subdirectory, make changes, add your own writable remote repository to push your changes into, fetch and merge from the original repository, and more. If you run <code>git status</code> right after you add the submodule, you see two things:</p>
+
+<pre><code>$ git status&#x000A;# On branch master&#x000A;# Changes to be committed:&#x000A;#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)&#x000A;#&#x000A;#      new file:   .gitmodules&#x000A;#      new file:   rack&#x000A;#&#x000A;</code></pre>
+
+<p>First you notice the <code>.gitmodules</code> file. This is a configuration file that stores the mapping between the project’s URL and the local subdirectory you’ve pulled it into:</p>
+
+<pre><code>$ cat .gitmodules&#x000A;[submodule &quot;rack&quot;]&#x000A;      path = rack&#x000A;      url = git://github.com/chneukirchen/rack.git&#x000A;</code></pre>
+
+<p>If you have multiple submodules, you’ll have multiple entries in this file. It’s important to note that this file is version-controlled with your other files, like your <code>.gitignore</code> file. It’s pushed and pulled with the rest of your project. This is how other people who clone this project know where to get the submodule projects from.</p>
+
+<p>The other listing in the <code>git status</code> output is the rack entry. If you run <code>git diff</code> on that, you see something interesting:</p>
+
+<pre><code>$ git diff --cached rack&#x000A;diff --git a/rack b/rack&#x000A;new file mode 160000&#x000A;index 0000000..08d709f&#x000A;--- /dev/null&#x000A;+++ b/rack&#x000A;@@ -0,0 +1 @@&#x000A;+Subproject commit 08d709f78b8c5b0fbeb7821e37fa53e69afcf433&#x000A;</code></pre>
+
+<p>Although <code>rack</code> is a subdirectory in your working directory, Git sees it as a submodule and doesn’t track its contents when you’re not in that directory. Instead, Git records it as a particular commit from that repository. When you make changes and commit in that subdirectory, the superproject notices that the HEAD there has changed and records the exact commit you’re currently working off of; that way, when others clone this project, they can re-create the environment exactly.</p>
+
+<p>This is an important point with submodules: you record them as the exact commit they’re at. You can’t record a submodule at <code>master</code> or some other symbolic reference.</p>
+
+<p>When you commit, you see something like this:</p>
+
+<pre><code>$ git commit -m &#39;first commit with submodule rack&#39;&#x000A;[master 0550271] first commit with submodule rack&#x000A; 2 files changed, 4 insertions(+), 0 deletions(-)&#x000A; create mode 100644 .gitmodules&#x000A; create mode 160000 rack&#x000A;</code></pre>
+
+<p>Notice the 160000 mode for the rack entry. That is a special mode in Git that basically means you’re recording a commit as a directory entry rather than a subdirectory or a file.</p>
+
+<p>You can treat the <code>rack</code> directory as a separate project and then update your superproject from time to time with a pointer to the latest commit in that subproject. All the Git commands work independently in the two directories:</p>
+
+<pre><code>$ git log -1&#x000A;commit 0550271328a0038865aad6331e620cd7238601bb&#x000A;Author: Scott Chacon &lt;schacon@gmail.com&gt;&#x000A;Date:   Thu Apr 9 09:03:56 2009 -0700&#x000A;&#x000A;    first commit with submodule rack&#x000A;$ cd rack/&#x000A;$ git log -1&#x000A;commit 08d709f78b8c5b0fbeb7821e37fa53e69afcf433&#x000A;Author: Christian Neukirchen &lt;chneukirchen@gmail.com&gt;&#x000A;Date:   Wed Mar 25 14:49:04 2009 +0100&#x000A;&#x000A;    Document version change&#x000A;</code></pre>
+
+<h3 id="Cloning-a-Project-with-Submodules"><a href="#Cloning-a-Project-with-Submodules">Cloning a Project with Submodules</a></h3>
+
+<p>Here you’ll clone a project with a submodule in it. When you receive such a project, you get the directories that contain submodules, but none of the files yet:</p>
+
+<pre><code>$ git clone git://github.com/schacon/myproject.git&#x000A;Initialized empty Git repository in /opt/myproject/.git/&#x000A;remote: Counting objects: 6, done.&#x000A;remote: Compressing objects: 100% (4/4), done.&#x000A;remote: Total 6 (delta 0), reused 0 (delta 0)&#x000A;Receiving objects: 100% (6/6), done.&#x000A;$ cd myproject&#x000A;$ ls -l&#x000A;total 8&#x000A;-rw-r--r--  1 schacon  admin   3 Apr  9 09:11 README&#x000A;drwxr-xr-x  2 schacon  admin  68 Apr  9 09:11 rack&#x000A;$ ls rack/&#x000A;$&#x000A;</code></pre>
+
+<p>The <code>rack</code> directory is there, but empty. You must run two commands: <code>git submodule init</code> to initialize your local configuration file, and <code>git submodule update</code> to fetch all the data from that project and check out the appropriate commit listed in your superproject:</p>
+
+<pre><code>$ git submodule init&#x000A;Submodule &#39;rack&#39; (git://github.com/chneukirchen/rack.git) registered for path &#39;rack&#39;&#x000A;$ git submodule update&#x000A;Initialized empty Git repository in /opt/myproject/rack/.git/&#x000A;remote: Counting objects: 3181, done.&#x000A;remote: Compressing objects: 100% (1534/1534), done.&#x000A;remote: Total 3181 (delta 1951), reused 2623 (delta 1603)&#x000A;Receiving objects: 100% (3181/3181), 675.42 KiB | 173 KiB/s, done.&#x000A;Resolving deltas: 100% (1951/1951), done.&#x000A;Submodule path &#39;rack&#39;: checked out &#39;08d709f78b8c5b0fbeb7821e37fa53e69afcf433&#39;&#x000A;</code></pre>
+
+<p>Now your <code>rack</code> subdirectory is at the exact state it was in when you committed earlier. If another developer makes changes to the rack code and commits, and you pull that reference down and merge it in, you get something a bit odd:</p>
+
+<pre><code>$ git merge origin/master&#x000A;Updating 0550271..85a3eee&#x000A;Fast forward&#x000A; rack |    2 +-&#x000A; 1 files changed, 1 insertions(+), 1 deletions(-)&#x000A;[master*]$ git status&#x000A;# On branch master&#x000A;# Changes not staged for commit:&#x000A;#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)&#x000A;#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)&#x000A;#&#x000A;#      modified:   rack&#x000A;#&#x000A;</code></pre>
+
+<p>You merged in what is basically a change to the pointer for your submodule; but it doesn’t update the code in the submodule directory, so it looks like you have a dirty state in your working directory:</p>
+
+<pre><code>$ git diff&#x000A;diff --git a/rack b/rack&#x000A;index 6c5e70b..08d709f 160000&#x000A;--- a/rack&#x000A;+++ b/rack&#x000A;@@ -1 +1 @@&#x000A;-Subproject commit 6c5e70b984a60b3cecd395edd5b48a7575bf58e0&#x000A;+Subproject commit 08d709f78b8c5b0fbeb7821e37fa53e69afcf433&#x000A;</code></pre>
+
+<p>This is the case because the pointer you have for the submodule isn’t what is actually in the submodule directory. To fix this, you must run <code>git submodule update</code> again:</p>
+
+<pre><code>$ git submodule update&#x000A;remote: Counting objects: 5, done.&#x000A;remote: Compressing objects: 100% (3/3), done.&#x000A;remote: Total 3 (delta 1), reused 2 (delta 0)&#x000A;Unpacking objects: 100% (3/3), done.&#x000A;From git@github.com:schacon/rack&#x000A;   08d709f..6c5e70b  master     -&gt; origin/master&#x000A;Submodule path &#39;rack&#39;: checked out &#39;6c5e70b984a60b3cecd395edd5b48a7575bf58e0&#39;&#x000A;</code></pre>
+
+<p>You have to do this every time you pull down a submodule change in the main project. It’s strange, but it works.</p>
+
+<p>One common problem happens when a developer makes a change locally in a submodule but doesn’t push it to a public server. Then, they commit a pointer to that non-public state and push up the superproject. When other developers try to run <code>git submodule update</code>, the submodule system can’t find the commit that is referenced, because it exists only on the first developer’s system. If that happens, you see an error like this:</p>
+
+<pre><code>$ git submodule update&#x000A;fatal: reference isn’t a tree: 6c5e70b984a60b3cecd395edd5b48a7575bf58e0&#x000A;Unable to checkout &#39;6c5e70b984a60b3cecd395edd5ba7575bf58e0&#39; in submodule path &#39;rack&#39;&#x000A;</code></pre>
+
+<p>You have to see who last changed the submodule:</p>
+
+<pre><code>$ git log -1 rack&#x000A;commit 85a3eee996800fcfa91e2119372dd4172bf76678&#x000A;Author: Scott Chacon &lt;schacon@gmail.com&gt;&#x000A;Date:   Thu Apr 9 09:19:14 2009 -0700&#x000A;&#x000A;    added a submodule reference I will never make public. hahahahaha!&#x000A;</code></pre>
+
+<p>Then, you e-mail that guy and yell at him.</p>
+
+<h3 id="Superprojects"><a href="#Superprojects">Superprojects</a></h3>
+
+<p>Sometimes, developers want to get a combination of a large project’s subdirectories, depending on what team they’re on. This is common if you’re coming from CVS or Subversion, where you’ve defined a module or collection of subdirectories, and you want to keep this type of workflow.</p>
+
+<p>A good way to do this in Git is to make each of the subdirectories a separate Git repository and then create superproject Git repositories that contain multiple submodules. A benefit of this approach is that you can more specifically define the relationships between the projects with tags and branches in the superprojects.</p>
+
+<h3 id="Issues-with-Submodules"><a href="#Issues-with-Submodules">Issues with Submodules</a></h3>
+
+<p>Using submodules isn’t without hiccups, however. First, you must be relatively careful when working in the submodule directory. When you run <code>git submodule update</code>, it checks out the specific version of the project, but not within a branch. This is called having a detached HEAD — it means the HEAD file points directly to a commit, not to a symbolic reference. The issue is that you generally don’t want to work in a detached HEAD environment, because it’s easy to lose changes. If you do an initial <code>submodule update</code>, commit in that submodule directory without creating a branch to work in, and then run <code>git submodule update</code> again from the superproject without committing in the meantime, Git will overwrite your changes without telling you.  Technically you won’t lose the work, but you won’t have a branch pointing to it, so it will be somewhat difficult to retrieve.</p>
+
+<p>To avoid this issue, create a branch when you work in a submodule directory with <code>git checkout -b work</code> or something equivalent. When you do the submodule update a second time, it will still revert your work, but at least you have a pointer to get back to.</p>
+
+<p>Switching branches with submodules in them can also be tricky. If you create a new branch, add a submodule there, and then switch back to a branch without that submodule, you still have the submodule directory as an untracked directory:</p>
+
+<pre><code>$ git checkout -b rack&#x000A;Switched to a new branch &quot;rack&quot;&#x000A;$ git submodule add git@github.com:schacon/rack.git rack&#x000A;Initialized empty Git repository in /opt/myproj/rack/.git/&#x000A;...&#x000A;Receiving objects: 100% (3184/3184), 677.42 KiB | 34 KiB/s, done.&#x000A;Resolving deltas: 100% (1952/1952), done.&#x000A;$ git commit -am &#39;added rack submodule&#39;&#x000A;[rack cc49a69] added rack submodule&#x000A; 2 files changed, 4 insertions(+), 0 deletions(-)&#x000A; create mode 100644 .gitmodules&#x000A; create mode 160000 rack&#x000A;$ git checkout master&#x000A;Switched to branch &quot;master&quot;&#x000A;$ git status&#x000A;# On branch master&#x000A;# Untracked files:&#x000A;#   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)&#x000A;#&#x000A;#      rack/&#x000A;</code></pre>
+
+<p>You have to either move it out of the way or remove it, in which case you have to clone it again when you switch back—and you may lose local changes or branches that you didn’t push up.</p>
+
+<p>The last main caveat that many people run into involves switching from subdirectories to submodules. If you’ve been tracking files in your project and you want to move them out into a submodule, you must be careful or Git will get angry at you. Assume that you have the rack files in a subdirectory of your project, and you want to switch it to a submodule. If you delete the subdirectory and then run <code>submodule add</code>, Git yells at you:</p>
+
+<pre><code>$ rm -Rf rack/&#x000A;$ git submodule add git@github.com:schacon/rack.git rack&#x000A;&#39;rack&#39; already exists in the index&#x000A;</code></pre>
+
+<p>You have to unstage the <code>rack</code> directory first. Then you can add the submodule:</p>
+
+<pre><code>$ git rm -r rack&#x000A;$ git submodule add git@github.com:schacon/rack.git rack&#x000A;Initialized empty Git repository in /opt/testsub/rack/.git/&#x000A;remote: Counting objects: 3184, done.&#x000A;remote: Compressing objects: 100% (1465/1465), done.&#x000A;remote: Total 3184 (delta 1952), reused 2770 (delta 1675)&#x000A;Receiving objects: 100% (3184/3184), 677.42 KiB | 88 KiB/s, done.&#x000A;Resolving deltas: 100% (1952/1952), done.&#x000A;</code></pre>
+
+<p>Now suppose you did that in a branch. If you try to switch back to a branch where those files are still in the actual tree rather than a submodule — you get this error:</p>
+
+<pre><code>$ git checkout master&#x000A;error: Untracked working tree file &#39;rack/AUTHORS&#39; would be overwritten by merge.&#x000A;</code></pre>
+
+<p>You have to move the <code>rack</code> submodule directory out of the way before you can switch to a branch that doesn’t have it:</p>
+
+<pre><code>$ mv rack /tmp/&#x000A;$ git checkout master&#x000A;Switched to branch &quot;master&quot;&#x000A;$ ls&#x000A;README  rack&#x000A;</code></pre>
+
+<p>Then, when you switch back, you get an empty <code>rack</code> directory. You can either run <code>git submodule update</code> to reclone, or you can move your <code>/tmp/rack</code> directory back into the empty directory.</p>
+
+<div id="nav"><a href="/book/en/Git-Tools-Debugging-with-Git">prev</a> | <a href="/book/en/Git-Tools-Subtree-Merging">next</a></div></div>
+</div>
+
+</div>
+</div>
+<footer>
+<div class='site-source'>
+This <a href="https://github.com/github/gitscm-next/blob/master/README.md#license">open sourced</a> site is <a href="https://github.com/github/gitscm-next">hosted on GitHub.</a><br>
+Patches, suggestions, and comments are welcome.
+</div>
+<div class='sfc-member'>
+Git is a member of <a href="/sfc">Software Freedom Conservancy</a>
+</div>
+</footer>
+<script src="/assets/jquery-1.7.1.min-8995aa22fa589eacd71ee464eae9f9cc.js" type="text/javascript"></script>
+<script src="/assets/jquery-ui-1.8.18.custom.min-b258993d5959146bc9695f9448caa100.js" type="text/javascript"></script>
+<script src="/assets/jquery.defaultvalue-a940d9c1e0e4d571bb2d6659cfc22c32.js" type="text/javascript"></script>
+<script src="/assets/session.min-73f8dc381c79bc40b3ba3bd0fa561541.js" type="text/javascript"></script>
+<script src="/assets/site-4c5284105c7e9fbef4b7b2dedb73c839.js" type="text/javascript"></script>
+
+</div>
+<script type="text/javascript">if (!NREUMQ.f) { NREUMQ.f=function() {
+NREUMQ.push(["load",new Date().getTime()]);
+var e=document.createElement("script");
+e.type="text/javascript";
+e.src=(("http:"===document.location.protocol)?"http:":"https:") + "//" +
+  "rpm-images.newrelic.com/42/eum/rum.js";
+document.body.appendChild(e);
+if(NREUMQ.a)NREUMQ.a();
+};
+NREUMQ.a=window.onload;window.onload=NREUMQ.f;
+};
+NREUMQ.push(["nrfj","beacon-1.newrelic.com","20c4a8c482",454369,"dl5cQkcLXF9XRBoHW1paQRlGAVNHW1lb",0,442,new Date().getTime(),"","","","",""]);</script></body>
+</html>
