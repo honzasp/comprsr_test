@@ -5,7 +5,7 @@ def show(msg)
   STDOUT.flush
 end
 
-samples_dir = File.expand_path("../../samples", __FILE__)
+samples_dir = File.expand_path("../samples", __FILE__)
 levels = [0, 3, 6, 9]
 
 show "reading samples "
@@ -21,7 +21,7 @@ show " ok\n"
 
 levels.each do |level|
   show "level #{level} "
-  level_dir = File.expand_path("../zlib#{level}", __FILE__)
+  level_dir = File.expand_path("../zlib/zlib#{level}", __FILE__)
   Dir.mkdir(level_dir) unless Dir.exists? level_dir
 
   samples.each do |name, data|

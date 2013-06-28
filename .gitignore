@@ -1,3 +1,4 @@
 .*.sw*
-zlib/zlib*
+zlib
+tester_*
 *.dummy

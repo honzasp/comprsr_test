@@ -7,7 +7,7 @@ mod zlib { pub use comprsr_zlib::zlib::*; }
 
 fn main() {
   let test_root = match os::self_exe_path() {
-      Some(self_path) => self_path.dir_path(),
+      Some(self_path) => self_path,
       None => fail!(~"os::self_exe_path() returned None"),
     };
 
