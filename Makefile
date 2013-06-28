@@ -23,4 +23,4 @@ zlib.dummy: $(SAMPLES)
 	touch $@
 
 clean:
-	rm -rf *.dummy $(ZLIB_DIR)
+	rm -rf *.dummy $(ZLIB_DIR) $(ZLIB_TESTER)
