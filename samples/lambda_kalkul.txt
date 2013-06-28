@@ -1,0 +1,172 @@
+Lambda kalkul
+
+Skočit na: Navigace, Hledání
+
+Lambda kalkul je formální systém a výpočetní model používaný v teoretické
+informatice a matematice pro studium funkcí a rekurze. Jeho autory jsou Alonzo
+Church a Stephen Cole Kleene. Lambda kalkul je teoretickým základem
+funkcionálního programování a příslušných programovacích jazyků, obzvláště
+Lispu.
+
+Lambda kalkul analyzuje funkce nikoli z hlediska původního matematického smyslu
+zobrazení z množiny do množiny, ale jako metodu výpočtu. Dá se chápat jako
+nejjednodušší univerzální programovací jazyk. Je univerzální, neboť libovolnou
+rekurzivně spočetnou funkci lze vyjádřit a vyčíslit pomocí tohoto formalismu,
+lambda kalkul je tedy výpočetní silou ekvivalentní Turingovu stroji.
+
+Tento článek se bude zaobírat netypovým lambda kalkulem. Existuje totiž
+rozšíření zvané typový lambda kalkul.
+
+Obsah
+
+    1 Základní přehled
+    2 Formální popis
+        2.1 Věta o pevném bodě
+        2.2 Reprezentace objektů λ-kalkulu
+    3 Teoretické využití
+    4 Související články
+
+Základní přehled
+
+V lambda kalkulu každý výraz popisuje funkci jednoho argumentu, který je sám
+funkcí jednoho argumentu, a jejímž výsledkem je opět funkce jednoho argumentu.
+Funkce lze definovat bez pojmenování, uvedením lambda výrazu, který popisuje,
+jak se z hodnoty argumentu vypočte hodnota funkce. Příkladem může být funkce
+„přičti dvojku“, f(x) = x + 2. V lambda kalkulu se taková funkce zapíše jako λ
+x. x + 2 (nebo, beze změny významu λ y. y + 2, jméno argumentu není podstatné).
+Aplikace takové funkce na číslo 3 se zapíše jako (λ x. x + 2) 3. Aplikace je
+asociativní zleva: f x y = (f x) y.
+
+Formální popis
+
+Mějme dány nejvýše spočetné množiny C resp. V (konstant resp. proměnných).
+Množinou všech lambda výrazů rozumíme množinu Λ (velká lambda) řetězů
+obsahujících symboly z C ∪ V ∪ {(, ), λ} takových, že:
+
+    c ∈ C, => c ∈ Λ
+    v ∈ V => v ∈ Λ
+    M,N ∈ Λ → (M N) ∈ Λ
+    x ∈ V, M ∈ Λ → (λ x . M) ∈ Λ
+
+V dalším budeme označovat konstanty písmeny c, d, e, …, proměnné odzadu tj. z,
+y, x, … a obecné λ-výrazy velkými písmeny latinky. Budeme také vynechávat
+závorky, tj. místo (λ . x.x) budeme psát λ . x.x (nebo jen λ xx). Podobně výraz
+λx (x, y, z) budeme značit jako λx . x, y, z.
+
+Faktu, že na pojmenování (označení) vázaných proměnných nezáleží, využijeme.
+Tomuto se formálně říká Alfa konverze.
+
+Příklad: Výraz λx . xy je stejný jako λw . wy.
+
+Nechť M je libovolný λ-výraz. Množinu všech volných proměnných M značíme FV(M) a
+definujeme ji následovně:
+
+    FV(x) = {x}
+    FV(NL) = FV(N) ∪ FV(L)
+    FV(λx . N) = FV(N) - {x}
+
+Lambda výraz M, pro který je množina FV prázdná, nazýváme uzavřeným λ-výrazem
+nebo také kombinátorem.
+
+Příklad: y (λxy . λyz) obsahuje volné proměnné z, y a vázané x, y. Výraz λxy .
+λxy je kombinátorem.
+
+Mnemotechnická pomůcka pro označení množin: C … constant, V … variable, FV …
+free variable.
+
+Nechť M, N ∈ Λ. Výraz tvaru M=N, kde = je speciální symbol, nazýváme rovnost.
+Někdy se používá označení ==.
+
+Lambda kalkul definujeme jako teorii rovností mezi λ-výrazy založenou na
+následujících axiomech:
+
+    (λx . M) N = M[x := N] (tzv. Beta konverze)
+    M = N
+    M = N → N = M (asociativita)
+    M = N ∧ N = L → M = L (tranzitivita)
+    M = M` → ZM = ZM`
+    M = M` → MZ = M`Z
+    M = M` → λx . M = λx . M`
+
+V některých učebnicích se předpokládá, že M neobsahuje y. Axiom je tedy tvaru
+
+    λx . M = λy . ( M[x := y] )1
+
+Pokud je v λ-kalkulu dokazatelná rovnost M=N, píšeme λ~M=N a říkáme, že λ-výrazy
+M, N jsou navzájem (Beta) konvertibilní. (Poznámka: použil jsem označení pomocí
+~, ale v literatuře se častěji setkáte se znakem ⊥ otočeným o 90 stupňů vpravo.)
+
+Zápisem M=N rozumíme tu skutečnost, že dva λ-výrazy jsou buď totožné, nebo je
+lze ztotožnit přejmenováním vázaných proměnných.
+
+Příklad: λx . xy ≡ λx . xy, λz . xz ≡ λy . xy (alfa konverze), ale λx . xz ≠ λx
+. xy.
+
+Mezi standardní kombinátory řadíme:
+
+    I: λx . x (identita)
+    K: λxy . x (ev. K*: λxy . y)
+    S: λxyz . xz (yz)
+
+Tyto kombinátory dávají základ SKI kalkulu. Je vhodné si ověřit, že:
+
+    IM = M
+    KMN = M
+    SMNL = ML(NL)
+
+Například druhý případ: KMN, což můžeme přepsat jako (λxy . x)MN = (λy. x[x :=
+M])N, což je (λy . M)N = M[y := n] a to je M. Dokázali jsme, že KMN = M.
+Věta o pevném bodě
+
+    Ke každému λ-výrazu F (F ∈ Λ) existuje X ∈ Λ tak, že FX = X.
+    Definujeme-li (tzv. kombinátor pevného bodu) Y = λf (λx . f(xx))(λx .
+    f(xx)), pak pro libovolná F ∈ Λ platí: F(Y, F)
+
+Důsledkem je tvrzení: ke každému kontextu C[f, x] (tj. λ-výrazu, který případně
+obsahuje proměnné f, x) existuje λ-výraz F ∈ Λ tak, že pro všechny X ∈ Λ:
+
+    FX = C[f, x][f := F][x := X]
+
+Podtrženo a sečteno: každý λ-výraz obsahuje pevný bod a tedy i kombinátor
+pevného bodu, pomocí kterého tento pevný bod najdeme. Je nutno si uvědomit, že v
+lambda kalkulu pracujeme s funkcemi (vyššího řádu), pevným bodem tedy je opět
+funkce.
+
+Reprezentace objektů λ-kalkulu
+
+Pravdivostní hodnoty kódujeme pomocí λ-výrazů T (pravda) a F (nepravda)
+definovaných následovně:
+
+    T ≡ K (λxy . x)
+    F ≡ K* (λxy . y)
+
+Logický výraz pokud D pak P jinak Q, kde D (logická proměnná) nabývá hodnot T
+nebo F, může být zakódován jako DPQ. Pro D = T (resp. D = F) dostáváme
+
+    TPQ ≡ (λxy . x) PQ = P (resp. FPQ = Q)
+
+Teoretické využití
+
+Pomocí lambda kalkulu lze dobře definovat vyčíslitelnost.
+
+Libovolná funkce F: N → N je vyčíslitelná právě tehdy, když existuje lambda
+výraz f, u kterého pro libovolná přirozená čísla x a y platí F(x) = y právě
+tehdy, když f x == y, kde x a y jsou Churchova čísla odpovídající x a y. Tak
+vypadá jeden ze způsobů definice vyčíslitelnosti, který je základem
+Church-Turingovy teze.
+
+Problém určit, zda dva výrazy v lambda kalkulu jsou ekvivalentní, nemůže žádný univerzální algoritmus vyřešit a tento problém byl první, u kterého se nerozhodnutelnost podařilo dokázat. V důkazu tohoto faktu Alan Church nejprve problém zredukoval na určení, zda daný lambda výraz má nějakou normální formu, přičemž takovou formou se míní ekvivalentní výraz, který nelze dále zjednodušit. Poté v rámci důkazu sporem předpokládá, že takový predikát je vyčíslitelný a lze ho tedy vyjádřit pomocí lambda kalkulu. S využitím předchozích Kleeneho výsledků dokázal lambda výrazům přiřadit Gödelovo číslo a poté obdobnou technikou jako v důkazu první Gödelovy věty o neúplnosti vytvořil lambda výraz e. Konečně, pokud je e aplikováno samo na sebe (na své Gödelovo číslo), výsledkem je spor.
+
+Pomocí něho lze také definovat operace v objektových databázích. Na principech
+lambda kalkulu je založená dotazovací část jazyka smalltalk. Tento jazyk používá
+například rozsáhlá objektová databáze GemStone.
+
+Související články
+
+    Funkcionální programování
+    Kombinatorická logika
+
+Kategorie:
+
+    Vyčíslitelnost
+    Logika
