@@ -1,4 +1,5 @@
-extern mod comprsr_zlib;
+extern mod comprsr_zlib
+  (vers = "0.0.1", author = "github.com/honzasp");
 
 use std::io;
 use std::os;
@@ -44,7 +45,7 @@ fn test_subdir(dir: &Path, samples: &[(~str, ~[u8])]) {
           compr_file.to_str(), err.to_str())),
       };
 
-    show(fmt!("  %?: ", name));
+    show(fmt!("  %s: ", name));
     match test_zlib(expected_data, compr_reader) {
       Ok(()) => show("ok"),
       Err(err) => show(fmt!("err: %?", err)),
