@@ -124,7 +124,7 @@ fn run_zlib(compr_reader: @io::Reader) -> Result<~[u8], ~str> {
   }
 
   if decoder.has_finished() {
-    Ok(*decoder.finish())
+    Ok(*decoder.close())
   } else {
     Err(fmt!("decoder has not finished before end of input"))
   }
