@@ -1,4 +1,5 @@
 .*.sw*
 zlib
 tester_*
+benchmarker_*
 *.dummy
