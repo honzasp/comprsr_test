@@ -5,6 +5,7 @@ extern mod comprsr_zlib
 use std::io;
 use std::os;
 use extra::time;
+use extra::term;
 
 mod zlib { pub use comprsr_zlib::zlib::*; }
 
@@ -17,23 +18,23 @@ fn main() {
   let samples_dir = &test_root.push("samples");
   let zlib_dir = &test_root.push("zlib");
 
-  show("reading samples ");
+  show_info("reading samples ");
   let samples: ~[(~str, ~[u8])] = os::list_dir_path(samples_dir)
-    .map(|&sample_path| {
+    .map(|sample_path| {
       let name = sample_path.filename().unwrap();
-      let data = match io::read_whole_file(sample_path) {
+      let data = match io::read_whole_file(*sample_path) {
           Ok(data) => data,
           Err(err) => fail!(fmt!("reading %? failed: %?", sample_path, err)),
         };
-      show(".");
+      show_file(".");
       (name, data)
     });
-  show(" ok\n");
+  show_ok(" ok\n");
 
   let zlib_dir_paths = os::list_dir_path(zlib_dir);
-  for zlib_dir_paths.iter().advance |&zlib_sub| {
-    if os::path_is_dir(zlib_sub) {
-      process_subdir(zlib_sub, samples);
+  for zlib_dir_paths.iter().advance |zlib_sub| {
+    if os::path_is_dir(*zlib_sub) {
+      process_subdir(*zlib_sub, samples);
     }
   };
 }
@@ -49,85 +50,101 @@ fn process_subdir(dir: &Path, samples: &[(~str, ~[u8])]) {
 }
 
 fn test_subdir(dir: &Path, samples: &[(~str, ~[u8])]) {
-  show(fmt!("testing %s\n", dir.to_str()));
-  for samples.iter().advance |&(name, expected_data)| {
-    show(fmt!("  %s", name));
+  show_info("testing ");
+  show_dir(fmt!("%s\n", dir.to_str()));
 
-    let compr_file = dir.push(fmt!("%s.zlib", name));
+  for samples.iter().advance |&(ref name, ref expected_data)| {
+    show_file(fmt!("  %s", *name));
+
+    let compr_file = dir.push(fmt!("%s.zlib", *name));
     let compr_reader = match io::file_reader(&compr_file) {
         Ok(reader) => reader,
         Err(err) => fail!(fmt!("opening %s failed: %s",
           compr_file.to_str(), err.to_str())),
       };
 
-    show(": ");
-    match test_zlib(expected_data, compr_reader) {
-      Ok(()) => show("ok"),
-      Err(err) => show(fmt!("err: %s", err.to_str())),
+    show_info(": ");
+    match test_zlib(*expected_data, compr_reader) {
+      Ok(()) => show_ok("ok"),
+      Err(err) => show_error(fmt!("err: %s", err.to_str())),
     };
-    show("\n");
+    show_info("\n");
   }
 }
 
 fn bench_subdir(dir: &Path, samples: &[~str]) {
   let mut total_time: f64 = 0.0;
 
-  show(fmt!("benchmarking %s\n", dir.to_str()));
-  for samples.iter().advance |&name| {
-    show(fmt!("  %s", name));
+  show_info("benchmarking ");
+  show_dir(fmt!("%s\n", dir.to_str()));
+  for samples.iter().advance |name| {
+    show_file(fmt!("  %s", *name));
 
-    let compr_file = dir.push(fmt!("%s.zlib", name));
+    let compr_file = dir.push(fmt!("%s.zlib", *name));
     let compr_data = match io::read_whole_file(&compr_file) {
         Ok(data) => data,
         Err(err) => fail!(fmt!("reading %s failed: %s",
           compr_file.to_str(), err.to_str())),
       };
 
-    show(": ");
+    show_info(": ");
     do io::with_bytes_reader(compr_data) |reader| {
       match bench_zlib(reader) {
         Ok(time) => {
           for (40 - name.len()).times {
-            show(" "); 
+            show_info(" "); 
           };
-          show(fmt!("%s s", time.to_str()));
+          show_ok(fmt!("%s s", time.to_str()));
           total_time = total_time + time;
         },
-        Err(err) => show(fmt!("err: %s", err.to_str())),
+        Err(err) => show_error(fmt!("err: %s", err.to_str())),
       }
     };
-    show("\n");
+    show_info("\n");
   }
 
-  show(     "  -----------\n");
-  show(fmt!("              %s s\n", total_time.to_str()));
-  show("\n");
+  show_ok(     "  -----------\n");
+  show_ok(fmt!("              %s s\n", total_time.to_str()));
+  show_ok("\n");
 }
 
 fn run_zlib(compr_reader: @io::Reader) -> Result<~[u8], ~str> {
-  let mut decoder = zlib::decoder::Decoder::new(~~[]);
+  let mut decoder = zlib::decoder::Decoder::new();
+  let mut output = ~[];
 
   while !compr_reader.eof() {
     let mut buf = ~[0, ..256];
     let buf_len = buf.len();
     let read = compr_reader.read(buf, buf_len);
-    match decoder.input(buf.slice(0, read)) {
-      zlib::decoder::ConsumedRes => { },
-      zlib::decoder::FinishedRes(rest) =>
-        if !rest.is_empty() {
-          return Err(fmt!("decoder finished before end of input (%? bytes)",
-            rest.len()))
-        },
-      zlib::decoder::ErrorRes(err, _rest) =>
-        return Err(fmt!("decoder returned error: %?", err)),
+
+    let (result, new_output) = decoder.input(buf.slice(0, read), output);
+    match result {
+      Left(new_decoder) => {
+        decoder = new_decoder;
+        output = new_output;
+      },
+      Right((outcome, rest)) => {
+        match outcome {
+          Ok(()) => {
+            if rest.is_empty() {
+              return Ok(new_output)
+            } else {
+              return Err(fmt!("decoder finished before end of input \
+                (%u bytes left in input buffer, %u bytes in output)",
+                rest.len(), new_output.len() ))
+            }
+          },
+          Err(err) => {
+            return Err(fmt!("decoder returned error: %s (%u bytes in output)",
+              err.to_str(), new_output.len() ))
+          }
+        }
+      },
     }
   }
 
-  if decoder.has_finished() {
-    Ok(*decoder.close())
-  } else {
-    Err(fmt!("decoder has not finished before end of input"))
-  }
+  Err(fmt!("decoder has not finished before end of input (%u bytes in output)",
+    output.len()))
 }
 
 fn test_zlib(expected_data: &[u8], compr_reader: @io::Reader)
@@ -159,7 +176,28 @@ fn bench_zlib(compr_reader: @io::Reader)
   }
 }
 
-fn show(msg: &str) {
-  io::stdout().write(msg.as_bytes());
-  io::stdout().flush();
+fn show_ok(msg: &str)    { show_color(msg, term::color::GREEN); }
+fn show_error(msg: &str) { show_color(msg, term::color::RED); }
+fn show_info(msg: &str)  { show_plain(msg); }
+fn show_file(msg: &str)  { show_plain(msg); }
+fn show_dir(msg: &str)   { show_color(msg, term::color::BRIGHT_CYAN); }
+
+fn show_color(msg: &str, color: term::color::Color) {
+  let out = io::stdout();
+  match term::Terminal::new(out) {
+    Ok(term) => {
+      term.fg(color);
+      out.write_str(msg);
+      term.reset();
+    },
+    Err(_) => {
+      show_plain(msg);
+    },
+  }
+}
+
+fn show_plain(msg: &str) {
+  let out = io::stdout();
+  out.write_str(msg);
+  out.flush();
 }
