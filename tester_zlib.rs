@@ -129,7 +129,7 @@ fn run_zlib(compr_reader: @io::Reader) -> Result<~[u8], ~str> {
       Right((outcome, rest)) => {
         match outcome {
           Ok(()) => {
-            if rest.is_empty() {
+            if rest.is_empty() && compr_reader.eof() {
               return Ok(new_output)
             } else {
               return Err(fmt!("decoder finished before end of input \

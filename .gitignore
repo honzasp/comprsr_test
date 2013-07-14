@@ -2,4 +2,5 @@
 zlib
 tester_*
 benchmarker_*
+verbose_zlib
 *.dummy
