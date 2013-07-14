@@ -4,9 +4,11 @@ COMPRSR_DIR = ..
 ZLIB_DIR    = zlib
 SAMPLES_DIR = samples
 
-RUSTC_FLAGS = -L $(COMPRSR_DIR)
-ZLIB_GEN    = ruby gen_zlib.rb
-SAMPLES     = $(shell find $(SAMPLES_DIR) -type f)
+RUSTC_FLAGS       = -L $(COMPRSR_DIR)
+TESTER_FLAGS      = $(RUSTC_FLAGS) --cfg tester --cfg use_colors
+BENCHMARKER_FLAGS = $(RUSTC_FLAGS) --cfg benchmarker
+ZLIB_GEN          = ruby gen_zlib.rb
+SAMPLES           = $(shell find $(SAMPLES_DIR) -type f)
 
 ZLIB_TESTER      = tester_zlib
 ZLIB_BENCHMARKER = benchmarker_zlib
@@ -24,10 +26,10 @@ zlib_bench: $(ZLIB_BENCHMARKER) zlib.dummy
 	./$<
 
 $(ZLIB_TESTER): $(ZLIB_TESTER_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
-	$(RUSTC) $(RUSTC_FLAGS) --cfg tester $< -o $@
+	$(RUSTC) $(TESTER_FLAGS) $< -o $@
 
 $(ZLIB_BENCHMARKER): $(ZLIB_TESTER_SRC)
-	$(RUSTC) $(RUSTC_FLAGS) --cfg benchmarker $< -o $@
+	$(RUSTC) $(BENCHMARKER_FLAGS) $< -o $@
 
 zlib.dummy: $(SAMPLES)
 	mkdir $(ZLIB_DIR) || true

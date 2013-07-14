@@ -5,7 +5,7 @@ extern mod comprsr_zlib
 use std::io;
 use std::os;
 use extra::time;
-use extra::term;
+use _show::*;
 
 mod zlib { pub use comprsr_zlib::zlib::*; }
 
@@ -19,16 +19,20 @@ fn main() {
   let zlib_dir = &test_root.push("zlib");
 
   show_info("reading samples ");
-  let samples: ~[(~str, ~[u8])] = os::list_dir_path(samples_dir)
-    .map(|sample_path| {
+  let list_dir = os::list_dir_path(samples_dir);
+  let samples: ~[(~str, ~[u8])] = list_dir.iter().filter_map(|sample_path| {
       let name = sample_path.filename().unwrap();
-      let data = match io::read_whole_file(*sample_path) {
-          Ok(data) => data,
-          Err(err) => fail!(fmt!("reading %? failed: %?", sample_path, err)),
-        };
-      show_file(".");
-      (name, data)
-    });
+      if name.char_at(0) != '.' {
+        let data = match io::read_whole_file(*sample_path) {
+            Ok(data) => data,
+            Err(err) => fail!(fmt!("reading %? failed: %?", sample_path, err)),
+          };
+        show_file(".");
+        Some((name, data))
+      } else {
+        None
+      }
+    }).collect();
   show_ok(" ok\n");
 
   let zlib_dir_paths = os::list_dir_path(zlib_dir);
@@ -64,6 +68,7 @@ fn test_subdir(dir: &Path, samples: &[(~str, ~[u8])]) {
       };
 
     show_info(": ");
+    for (40 - name.len()).times { show_info(" "); };
     match test_zlib(*expected_data, compr_reader) {
       Ok(()) => show_ok("ok"),
       Err(err) => show_error(fmt!("err: %s", err.to_str())),
@@ -88,12 +93,10 @@ fn bench_subdir(dir: &Path, samples: &[~str]) {
       };
 
     show_info(": ");
+    for (40 - name.len()).times { show_info(" "); };
     do io::with_bytes_reader(compr_data) |reader| {
       match bench_zlib(reader) {
         Ok(time) => {
-          for (40 - name.len()).times {
-            show_info(" "); 
-          };
           show_ok(fmt!("%s s", time.to_str()));
           total_time = total_time + time;
         },
@@ -113,7 +116,7 @@ fn run_zlib(compr_reader: @io::Reader) -> Result<~[u8], ~str> {
   let mut output = ~[];
 
   while !compr_reader.eof() {
-    let mut buf = ~[0, ..256];
+    let mut buf = ~[0, ..512];
     let buf_len = buf.len();
     let read = compr_reader.read(buf, buf_len);
 
@@ -176,28 +179,44 @@ fn bench_zlib(compr_reader: @io::Reader)
   }
 }
 
-fn show_ok(msg: &str)    { show_color(msg, term::color::GREEN); }
-fn show_error(msg: &str) { show_color(msg, term::color::RED); }
-fn show_info(msg: &str)  { show_plain(msg); }
-fn show_file(msg: &str)  { show_plain(msg); }
-fn show_dir(msg: &str)   { show_color(msg, term::color::BRIGHT_CYAN); }
+#[cfg(use_colors)]
+mod _show {
+  use extra::term;
+  use std::io;
 
-fn show_color(msg: &str, color: term::color::Color) {
-  let out = io::stdout();
-  match term::Terminal::new(out) {
-    Ok(term) => {
-      term.fg(color);
-      out.write_str(msg);
-      term.reset();
-    },
-    Err(_) => {
-      show_plain(msg);
-    },
+  pub fn show_ok(msg: &str)    { show_color(msg, term::color::GREEN); }
+  pub fn show_error(msg: &str) { show_color(msg, term::color::RED); }
+  pub fn show_info(msg: &str)  { ::show_plain(msg); }
+  pub fn show_file(msg: &str)  { ::show_plain(msg); }
+  pub fn show_dir(msg: &str)   { show_color(msg, term::color::BRIGHT_CYAN); }
+
+  fn show_color(msg: &str, color: term::color::Color) {
+    let out = io::stdout();
+    match term::Terminal::new(out) {
+      Ok(term) => {
+        term.fg(color);
+        out.write_str(msg);
+        term.reset();
+      },
+      Err(_) => {
+        ::show_plain(msg);
+      },
+    }
   }
 }
 
-fn show_plain(msg: &str) {
+#[cfg(not(use_colors))]
+mod _show {
+  pub fn show_ok(msg: &str)    { ::show_plain(msg); }
+  pub fn show_error(msg: &str) { ::show_plain(msg); }
+  pub fn show_info(msg: &str)  { ::show_plain(msg); }
+  pub fn show_file(msg: &str)  { ::show_plain(msg); }
+  pub fn show_dir(msg: &str)   { ::show_plain(msg); }
+}
+
+pub fn show_plain(msg: &str) {
   let out = io::stdout();
   out.write_str(msg);
   out.flush();
 }
+
