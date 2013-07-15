@@ -22,7 +22,7 @@ fn main() {
   let list_dir = os::list_dir_path(samples_dir);
   let samples: ~[(~str, ~[u8])] = list_dir.iter().filter_map(|sample_path| {
       let name = sample_path.filename().unwrap();
-      if name.char_at(0) != '.' {
+      if name.char_at(0) != '.' && name.char_at(0) != '_' {
         let data = match io::read_whole_file(*sample_path) {
             Ok(data) => data,
             Err(err) => fail!(fmt!("reading %? failed: %?", sample_path, err)),

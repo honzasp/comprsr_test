@@ -9,7 +9,7 @@ samples_dir = File.expand_path("../samples", __FILE__)
 levels = [0, 6, 9]
 
 show "reading samples "
-sample_names = Dir.entries(samples_dir).select { |s| s[0..0] != "." }
+sample_names = Dir.entries(samples_dir).select { |s| s !~ /^[._]/ }
 
 samples = {}
 sample_names.each do |sample_name|

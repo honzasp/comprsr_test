@@ -37,7 +37,7 @@ $(ZLIB_TESTER): $(ZLIB_TESTER_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
 $(ZLIB_BENCHMARKER): $(ZLIB_TESTER_SRC)
 	$(RUSTC) $(BENCHMARKER_FLAGS) $< -o $@
 
-zlib.dummy: $(SAMPLES)
+zlib.dummy: $(SAMPLES_DIR) $(SAMPLES)
 	mkdir $(ZLIB_DIR) || true
 	$(ZLIB_GEN)
 	touch $@
