@@ -1,6 +1,8 @@
 extern mod extra;
 extern mod comprsr_zlib
   (vers = "0.0.1", author = "github.com/honzasp");
+extern mod comprsr_gzip
+  (vers = "0.0.1", author = "github.com/honzasp");
 
 use std::io;
 use std::os;
@@ -10,6 +12,7 @@ use std::from_str;
 use extra::time;
 use _show::*;
 
+use gzip = comprsr_gzip::gzip;
 mod zlib { pub use comprsr_zlib::zlib::*; }
 
 fn main() {
@@ -212,10 +215,53 @@ fn decompress_zlib(compr_data: &[u8], chunk_size: uint)
   }
 }
 
-fn decompress_gzip(_compr_data: &[u8], _chunk_size: uint)
+fn decompress_gzip(compr_data: &[u8], chunk_size: uint)
 -> Result<~[u8], ~str> 
 {
-  Err(~"gzip not implemented yet")
+  let mut hdr_decoder = gzip::hdr_decoder::HeaderDecoder::new();
+  
+  let mut iter = compr_data.chunk_iter(chunk_size);
+  let trailing;
+  loop {
+    let chunk = match iter.next() {
+      Some(chunk) => chunk,
+      None => return Err(~"header decoder did not finish"),
+    };
+
+    match hdr_decoder.input(chunk) {
+      Left(new_hdr_deco) => { hdr_decoder = new_hdr_deco; },
+      Right((result, rest)) => match result {
+        Ok(_hdr) => { trailing = rest; break; },
+        Err(err) => { return Err(err.to_str()); },
+      },
+    }
+  }
+
+  let mut chunk = trailing;
+  let mut body_decoder = gzip::body_decoder::BodyDecoder::new();
+  let mut output = ~[];
+  loop {
+    let (result, new_output) = body_decoder.input(chunk, output);
+    output = new_output;
+    match result {
+      Left(new_body_deco) => { body_decoder = new_body_deco; },
+      Right((outcome, rest)) => {
+        match outcome {
+          Ok(()) => if rest.is_empty() && iter.next().is_none() {
+              return Ok(output)
+            } else {
+              return Err(~"the body decoder finished before end of input");
+            },
+          Err(err) => return Err(err.to_str()),
+        }
+      }
+    }
+
+    match iter.next() {
+      Some(bytes) => chunk = bytes,
+      None => return Err(~"the body decoder did not finish"),
+    }
+  }
 }
 
 #[cfg(use_colors)]

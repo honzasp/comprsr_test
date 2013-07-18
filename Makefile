@@ -26,7 +26,7 @@ test: $(TESTER) compressed.dummy
 #$(VERBOSE_ZLIB): $(VERBOSE_ZLIB_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
 #	$(RUSTC) $(VERBOSE_ZLIB_FLAGS) $< -o $@
 
-$(TESTER): $(TESTER_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
+$(TESTER): $(TESTER_SRC) libs
 	$(RUSTC) $(TESTER_FLAGS) $< -o $@
 
 compressed.dummy: $(SAMPLES)
@@ -35,7 +35,7 @@ compressed.dummy: $(SAMPLES)
 	touch $@
 
 libs:
-	$(MAKE) -C $(COMPRSR_DIR) libcomprsr_zlib.dummy
+	$(MAKE) -C $(COMPRSR_DIR) libcomprsr_zlib.dummy libcomprsr_gzip.dummy
 
 clean:
 	rm -f *.dummy $(TESTER)
