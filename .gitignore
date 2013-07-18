@@ -1,6 +1,4 @@
 .*.sw*
-zlib
-tester_*
-benchmarker_*
-verbose_zlib
+compressed
+tester
 *.dummy

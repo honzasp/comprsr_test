@@ -1,49 +1,42 @@
 RUSTC       = rustc
 
 COMPRSR_DIR = ..
-ZLIB_DIR    = zlib
+COMPR_DIR   = compressed
 SAMPLES_DIR = samples
 
 RUSTC_FLAGS        = -L $(COMPRSR_DIR)
-TESTER_FLAGS       = $(RUSTC_FLAGS) --cfg tester --cfg use_colors
-BENCHMARKER_FLAGS  = $(RUSTC_FLAGS) --cfg benchmarker
-VERBOSE_ZLIB_FLAGS = $(RUSTC_FLAGS)
-ZLIB_GEN           = ruby gen_zlib.rb
+TESTER_FLAGS       = $(RUSTC_FLAGS) --cfg use_colors
+#VERBOSE_ZLIB_FLAGS = $(RUSTC_FLAGS)
+GEN_COMPRESSED     = ruby gen_compressed.rb
 SAMPLES            = $(shell find $(SAMPLES_DIR) -type f)
 
-ZLIB_TESTER      = tester_zlib
-ZLIB_BENCHMARKER = benchmarker_zlib
-ZLIB_TESTER_SRC  = tester_zlib.rs
-VERBOSE_ZLIB     = verbose_zlib
-VERBOSE_ZLIB_SRC = verbose_zlib.rs
+TESTER      = tester
+TESTER_SRC  = tester.rs
+#VERBOSE_ZLIB     = verbose_zlib
+#VERBOSE_ZLIB_SRC = verbose_zlib.rs
 
 
-.PHONY: all zlib_test clean libs
+.PHONY: all test clean libs 
 
-all: zlib_test
+all: test
 
-zlib_test: $(ZLIB_TESTER) zlib.dummy
+test: $(TESTER) compressed.dummy
 	./$<
 
-zlib_bench: $(ZLIB_BENCHMARKER) zlib.dummy
-	./$<
+#$(VERBOSE_ZLIB): $(VERBOSE_ZLIB_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
+#	$(RUSTC) $(VERBOSE_ZLIB_FLAGS) $< -o $@
 
-$(VERBOSE_ZLIB): $(VERBOSE_ZLIB_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
-	$(RUSTC) $(VERBOSE_ZLIB_FLAGS) $< -o $@
-
-$(ZLIB_TESTER): $(ZLIB_TESTER_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
+$(TESTER): $(TESTER_SRC) libs $(COMPRSR_DIR)/libcomprsr_zlib.dummy
 	$(RUSTC) $(TESTER_FLAGS) $< -o $@
 
-$(ZLIB_BENCHMARKER): $(ZLIB_TESTER_SRC)
-	$(RUSTC) $(BENCHMARKER_FLAGS) $< -o $@
-
-zlib.dummy: $(SAMPLES_DIR) $(SAMPLES)
-	mkdir $(ZLIB_DIR) || true
-	$(ZLIB_GEN)
+compressed.dummy: $(SAMPLES)
+	rm -rf $(COMPR_DIR)
+	$(GEN_COMPRESSED)
 	touch $@
 
 libs:
 	$(MAKE) -C $(COMPRSR_DIR) libcomprsr_zlib.dummy
 
 clean:
-	rm -rf *.dummy $(ZLIB_DIR) $(ZLIB_TESTER) $(ZLIB_BENCHMARKER)
+	rm -f *.dummy $(TESTER)
+	rm -rf $(COMPR_DIR) 
