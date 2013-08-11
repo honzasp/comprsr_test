@@ -45,7 +45,7 @@ fn main() {
     {
       let name = sample_path.filename().unwrap();
       if name.char_at(0) != '.' && name.char_at(0) != '_' {
-        let data = match io::read_whole_file(*sample_path) {
+        let data = match io::read_whole_file(sample_path) {
             Ok(data) => data,
             Err(err) => fail!(fmt!("reading %? failed: %?", sample_path, err)),
           };
@@ -62,8 +62,8 @@ fn main() {
   let mut total_errors: uint = 0;
 
   for subpaths.iter().advance |subdir| {
-    if os::path_is_dir(*subdir) {
-      let (time, errors) = process_subdir(*subdir, samples, chunk_size);
+    if os::path_is_dir(subdir) {
+      let (time, errors) = process_subdir(subdir, samples, chunk_size);
       total_time += time;
       total_errors += errors;
     }
@@ -94,7 +94,7 @@ fn process_subdir(
     let sample_data = samples.find(&sample_name).unwrap();
 
     show_file(fmt!("  %-40s ", sample_name));
-    let compr_data = match io::read_whole_file(*compr_path) {
+    let compr_data = match io::read_whole_file(compr_path) {
       Ok(data) => data,
       Err(err) => fail!("Could not read %s: %s", compr_path.to_str(), err.to_str()),
     };
